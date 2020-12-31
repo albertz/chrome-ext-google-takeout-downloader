@@ -73,9 +73,13 @@ def handle_zip(path: str):
 
 def main():
     arg_parser = ArgumentParser()
-    arg_parser.add_argument("--handle-zip")
+    arg_parser.add_argument("--poll", help="Checks the given directory for new takeout ZIP files. Then does handle-zip. Deletes them!")
+    arg_parser.add_argument("--handle-zip", help="Extracts and imports the ZIP. WARNING: Deletes the ZIP at the end!")
     arg_parser.add_argument("--handle-extracted-dir")
     args = arg_parser.parse_args()
+
+    if args.poll:
+        pass  # TODO ...
 
     if args.handle_zip:
         handle_zip(args.handle_zip)
