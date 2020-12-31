@@ -4,27 +4,8 @@
 // found in the LICENSE file.
 
 // https://takeout.google.com/settings/takeout/downloads?...
-takeoutUrlRe = new RegExp('https://takeout.google.com/.*');
-
-function getDownloadItemById() {
-  var d = {};
-  try {
-    d = JSON.parse(localStorage.downloadItemById);
-  } catch (e) {
-    setDownloadItemById(d);
-  }
-  return d;
-}
-
-function setDownloadItemById(d) {
-  localStorage.downloadItemById = JSON.stringify(d);
-}
-
-function addDownloadItem(item) {
-  var d = getDownloadItemById();
-  d[item.id] = item;
-  setDownloadItemById(d);
-}
+takeoutUrlRe = /https:\/\/takeout.google.com\/.*/;
+takeoutFilenameRe = /.*-([0-9]+)\.(zip|mp4)/;
 
 chrome.downloads.onDeterminingFilename.addListener(function (item, __suggest) {
   function suggest(filename, conflictAction) {
@@ -38,22 +19,29 @@ chrome.downloads.onDeterminingFilename.addListener(function (item, __suggest) {
     // which was first picked up in branch 1580.
   }
 
-  if (takeoutUrlRe.test(item.url)) {
-    console.log("New download:", item);
-    addDownloadItem(item);
-    suggest(item.filename, 'overwrite');
+  if (!takeoutUrlRe.test(item.url))
     return;
-  }
+
+  console.log("New download:", item.filename);
+  suggest(item.filename, 'overwrite');
 });
 
 chrome.downloads.onChanged.addListener(function (delta) {
   if (!delta.state || (delta.state.current != 'complete'))
     return;
 
-  var d = getDownloadItemById();
-  if (!(delta.id in d))
-    return;
-  var item = d[delta.id];
+  chrome.downloads.search({id: delta.id}, function(results) {
+    console.assert(results.length == 1, [results, delta]);
+    var item = results[0];
+    if (!takeoutUrlRe.test(item.url))
+      return
 
-  console.log(delta, delta.id, delta.state.current, item);
+    console.assert(takeoutFilenameRe.test(item.filename), item);
+    var m = item.filename.match(takeoutFilenameRe);
+    var partNr = parseInt(m[1], 10);
+
+    console.log("Completed download:", item.filename, partNr);
+
+    // TODO now get next download
+  });
 });
