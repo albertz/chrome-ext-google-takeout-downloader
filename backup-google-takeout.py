@@ -76,6 +76,7 @@ def handle_zip(path: str):
 
 def poll_zip_dir(dir: str):
     expr = re.compile("^takeout-.*-([0-9]+)\\.zip$")
+    first = True
 
     while True:
         count = 0
@@ -90,9 +91,10 @@ def poll_zip_dir(dir: str):
             handle_zip(zip_path)
             count += 1
 
-        if count > 0:
+        if count > 0 or first:
             print("Sleep ...")
         time.sleep(3)
+        first = False
 
 
 def main():
