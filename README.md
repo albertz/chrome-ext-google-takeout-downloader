@@ -10,4 +10,5 @@ Some docs:
 https://developer.chrome.com/docs/extensions/reference/
 https://developer.chrome.com/docs/extensions/mv2/getstarted/
 https://www.sitepoint.com/create-chrome-extension-10-minutes-flat/
-
+https://developer.chrome.com/docs/extensions/reference/downloads/
+https://chromium.googlesource.com/chromium/src/+/master/chrome/common/extensions/docs/examples/api/downloads/download_filename_controller/
