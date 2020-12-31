@@ -4,7 +4,9 @@
     "description": "Automate the Google Takeout downloading",
     "manifest_version": 2,
 
-    "permissions": [
-        "downloads"
-    ]
+    "permissions": ["downloads"],
+    "content_security_policy": "script-src 'self'; default-src 'self'",
+
+    "options_page": "options.html",
+    "background": {"scripts": ["bg.js"], "persistent": false}
 }
