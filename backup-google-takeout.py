@@ -7,6 +7,9 @@ Store into Git Annex
 import better_exchook
 from subprocess import check_call, check_output
 import os
+import sys
+import time
+import re
 import atexit
 from argparse import ArgumentParser
 import tempfile
@@ -71,15 +74,33 @@ def handle_zip(path: str):
     os.remove(path)
 
 
+def poll_zip_dir(dir: str):
+    expr = re.compile("^takeout-.*-([0-9]+)\\.zip$")
+
+    while True:
+        for name in sorted(os.listdir(dir)):
+            m = expr.match(name)
+            if not m:
+                continue
+            
+            zip_path = f"{dir}/{name}"
+            print("Handle zip:", zip_path)
+            time.sleep(1)  # Give the user a chance to break early.
+            handle_zip(zip_path)
+
+        print("Sleep ...")
+        time.sleep(3)
+
+
 def main():
     arg_parser = ArgumentParser()
-    arg_parser.add_argument("--poll", help="Checks the given directory for new takeout ZIP files. Then does handle-zip. Deletes them!")
+    arg_parser.add_argument("--poll-zip-dir", help="Checks the given directory for new takeout ZIP files. Then does handle-zip. Deletes them!")
     arg_parser.add_argument("--handle-zip", help="Extracts and imports the ZIP. WARNING: Deletes the ZIP at the end!")
     arg_parser.add_argument("--handle-extracted-dir")
     args = arg_parser.parse_args()
 
-    if args.poll:
-        pass  # TODO ...
+    if args.poll_zip_dir:
+        poll_zip_dir(args.poll_zip_dir)
 
     if args.handle_zip:
         handle_zip(args.handle_zip)
@@ -90,4 +111,8 @@ def main():
 
 if __name__ == "__main__":
     better_exchook.install()
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt")
+        sys.exit(1)
