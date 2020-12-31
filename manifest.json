@@ -11,5 +11,9 @@
     "content_security_policy": "script-src 'self'; default-src 'self'",
 
     "options_page": "options.html",
-    "background": {"scripts": ["bg.js"], "persistent": false}
+    "background": {"scripts": ["bg.js"], "persistent": false},
+    "content_scripts": [{
+        "matches": ["https://takeout.google.com/settings/takeout/*"],
+        "js": ["content.js"]
+    }]
 }

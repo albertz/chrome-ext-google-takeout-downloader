@@ -6,6 +6,13 @@
 // https://takeout.google.com/settings/takeout/downloads?...
 takeoutUrlRe = /https:\/\/takeout.google.com\/.*/;
 takeoutFilenameRe = /.*-([0-9]+)\.(zip|mp4)/;
+port = {};
+
+chrome.runtime.onConnect.addListener(function(__port) {
+  console.log("New backend connection");
+  console.assert(__port.name == "backup-google-takeout", [__port, port]);
+  port.port = __port;
+});
 
 chrome.downloads.onDeterminingFilename.addListener(function (item, __suggest) {
   function suggest(filename, conflictAction) {
@@ -47,7 +54,6 @@ chrome.downloads.onChanged.addListener(function (delta) {
 });
 
 function nextDownload(partNr) {
-  var xpath = `//*[text()[contains(., 'Part ${partNr} of ')]]`;
-  var matchingElement = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-  console.log("next download:", matchingElement);
+  console.log("next download:", partNr);
+  port.port.postMessage({name: "nextDownload", partNr: partNr});
 }
