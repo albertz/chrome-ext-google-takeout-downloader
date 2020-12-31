@@ -2,5 +2,9 @@
     "name": "Google Takeout Downloader",
     "version": "0.1",
     "description": "Automate the Google Takeout downloading",
-    "manifest_version": 2
+    "manifest_version": 2,
+
+    "permissions": [
+        "downloads"
+    ]
 }
