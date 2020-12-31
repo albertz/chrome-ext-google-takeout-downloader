@@ -1,6 +1,8 @@
 // Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright 2020 Albert Zeyer.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 function matches(rule, item) {
     if (rule.matcher == 'js')
       return eval(rule.match_param);
@@ -18,8 +20,9 @@ function matches(rule, item) {
     if (rule.matcher == 'default-regex')
       return (new RegExp(rule.match_param)).test(item.filename);
     return false;
-  }
-  chrome.downloads.onDeterminingFilename.addListener(function(item, __suggest) {
+}
+
+chrome.downloads.onDeterminingFilename.addListener(function(item, __suggest) {
     function suggest(filename, conflictAction) {
       __suggest({filename: filename,
                  conflictAction: conflictAction,
@@ -49,5 +52,5 @@ function matches(rule, item) {
         break;
       }
     }
-  });
+});
   
