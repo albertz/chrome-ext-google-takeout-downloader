@@ -4,6 +4,8 @@ Automate the downloading...
 E.g. one export results in 358 packages (files) for me.
 I don't want to click each download one by one.
 
+https://superuser.com/questions/716756/how-to-automate-regular-google-takeout-backups-to-cloud-storage
+
 My first Chrome Extension.
 Some docs:
 

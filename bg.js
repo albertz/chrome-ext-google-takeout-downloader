@@ -3,54 +3,57 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-function matches(rule, item) {
-    if (rule.matcher == 'js')
-      return eval(rule.match_param);
-    if (rule.matcher == 'hostname') {
-      var link = document.createElement('a');
-      link.href = item.url.toLowerCase();
-      var host = (rule.match_param.indexOf(':') < 0) ? link.hostname : link.host;
-      return (host.indexOf(rule.match_param.toLowerCase()) ==
-              (host.length - rule.match_param.length));
-    }
-    if (rule.matcher == 'default')
-      return item.filename == rule.match_param;
-    if (rule.matcher == 'url-regex')
-      return (new RegExp(rule.match_param)).test(item.url);
-    if (rule.matcher == 'default-regex')
-      return (new RegExp(rule.match_param)).test(item.filename);
-    return false;
+// https://takeout.google.com/settings/takeout/downloads?...
+takeoutUrlRe = new RegExp('https://takeout.google.com/.*');
+
+function getDownloadItemById() {
+  var d = {};
+  try {
+    d = JSON.parse(localStorage.downloadItemById);
+  } catch (e) {
+    setDownloadItemById(d);
+  }
+  return d;
 }
 
-chrome.downloads.onDeterminingFilename.addListener(function(item, __suggest) {
-    function suggest(filename, conflictAction) {
-      __suggest({filename: filename,
-                 conflictAction: conflictAction,
-                 conflict_action: conflictAction});
-      // conflict_action was renamed to conflictAction in
-      // https://chromium.googlesource.com/chromium/src/+/f1d784d6938b8fe8e0d257e41b26341992c2552c
-      // which was first picked up in branch 1580.
-    }
-    var rules = localStorage.rules;
-    try {
-      rules = JSON.parse(rules);
-    } catch (e) {
-      localStorage.rules = JSON.stringify([]);
-    }
-    for (var index = 0; index < rules.length; ++index) {
-      var rule = rules[index];
-      if (rule.enabled && matches(rule, item)) {
-        console.log(item.url);
-        console.log(item.filename);
-        if (rule.action == 'overwrite') {
-          suggest(item.filename, 'overwrite');
-        } else if (rule.action == 'prompt') {
-          suggest(item.filename, 'prompt');
-        } else if (rule.action == 'js') {
-          eval(rule.action_js);
-        }
-        break;
-      }
-    }
+function setDownloadItemById(d) {
+  localStorage.downloadItemById = JSON.stringify(d);
+}
+
+function addDownloadItem(item) {
+  var d = getDownloadItemById();
+  d[item.id] = item;
+  setDownloadItemById(d);
+}
+
+chrome.downloads.onDeterminingFilename.addListener(function (item, __suggest) {
+  function suggest(filename, conflictAction) {
+    __suggest({
+      filename: filename,
+      conflictAction: conflictAction,
+      conflict_action: conflictAction
+    });
+    // conflict_action was renamed to conflictAction in
+    // https://chromium.googlesource.com/chromium/src/+/f1d784d6938b8fe8e0d257e41b26341992c2552c
+    // which was first picked up in branch 1580.
+  }
+
+  if (takeoutUrlRe.test(item.url)) {
+    console.log("New download:", item);
+    addDownloadItem(item);
+    suggest(item.filename, 'overwrite');
+    return;
+  }
 });
-  
+
+chrome.downloads.onChanged.addListener(function (delta) {
+  if (!delta.state || (delta.state.current != 'complete'))
+    return;
+
+  var d = getDownloadItemById();
+  if (!(delta.id in d))
+    return;
+  var item = d[delta.id];
+
+  console.log(delta, delta.id, delta.state.current, item);
+});
