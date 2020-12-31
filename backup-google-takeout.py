@@ -78,6 +78,7 @@ def poll_zip_dir(dir: str):
     expr = re.compile("^takeout-.*-([0-9]+)\\.zip$")
 
     while True:
+        count = 0
         for name in sorted(os.listdir(dir)):
             m = expr.match(name)
             if not m:
@@ -87,8 +88,10 @@ def poll_zip_dir(dir: str):
             print("Handle zip:", zip_path)
             time.sleep(1)  # Give the user a chance to break early.
             handle_zip(zip_path)
+            count += 1
 
-        print("Sleep ...")
+        if count > 0:
+            print("Sleep ...")
         time.sleep(3)
 
 
