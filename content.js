@@ -20,6 +20,8 @@ function nextDownload(partNr) {
 
   var downloadElement = matchingElement.nextSibling;
   console.assert(downloadElement.textContent.includes("Download"), downloadElement);
-  console.log("next download:", downloadElement, downloadElement.firstChild.firstChild);
-  downloadElement.firstChild.firstChild.click();
+  var downloadElementLinks = downloadElement.getElementsByTagName("a");
+  console.assert(downloadElementLinks.length == 1);
+  console.log("next download:", matchingElement, downloadElementLinks[0]);
+  downloadElementLinks[0].click();
 }
