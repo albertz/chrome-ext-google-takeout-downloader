@@ -37,6 +37,8 @@ function matches(rule, item) {
     for (var index = 0; index < rules.length; ++index) {
       var rule = rules[index];
       if (rule.enabled && matches(rule, item)) {
+        console.log(item.url);
+        console.log(item.filename);
         if (rule.action == 'overwrite') {
           suggest(item.filename, 'overwrite');
         } else if (rule.action == 'prompt') {
