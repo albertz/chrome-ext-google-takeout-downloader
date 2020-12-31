@@ -4,7 +4,10 @@
     "description": "Automate the Google Takeout downloading",
     "manifest_version": 2,
 
-    "permissions": ["downloads"],
+    "permissions": [
+        "downloads",
+        "https://takeout.google.com/settings/takeout/*"
+    ],
     "content_security_policy": "script-src 'self'; default-src 'self'",
 
     "options_page": "options.html",

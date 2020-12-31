@@ -42,6 +42,12 @@ chrome.downloads.onChanged.addListener(function (delta) {
 
     console.log("Completed download:", item.filename, partNr);
 
-    // TODO now get next download
+    nextDownload(partNr + 1);
   });
 });
+
+function nextDownload(partNr) {
+  var xpath = `//*[text()[contains(., 'Part ${partNr} of ')]]`;
+  var matchingElement = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+  console.log("next download:", matchingElement);
+}
