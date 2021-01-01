@@ -4,7 +4,7 @@ try {
     googlePwd = localStorage.googlePwd;
 } catch (error) {}
 
-if (googlePwd.length > 0) {
+if (googlePwd && googlePwd.length > 0) {
     var inputPwdElem = document.evaluate(
         '//input[@type="password"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     
