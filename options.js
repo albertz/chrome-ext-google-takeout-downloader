@@ -3,11 +3,16 @@ window.onload = function() {
     var pwdElem = document.getElementById('google-password');
 
     function storeGooglePwd() {
-        localStorage.googlePwd = pwdElem.value;
+        chrome.storage.local.set(
+            {googlePwd: {googlePwd: pwdElem.value}},
+            function() {});
     }
 
-    try {
-        pwdElem.value = localStorage.googlePwd;
-    } catch (e) {}  // ignore
     pwdElem.onchange = storeGooglePwd;
+
+    chrome.storage.local.get(["googlePwd"], function(result) {
+        if(result && result.googlePwd) {
+            pwdElem.value = result.googlePwd;
+        }
+    });
 }

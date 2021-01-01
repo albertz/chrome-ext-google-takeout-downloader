@@ -6,6 +6,7 @@
 
     "permissions": [
         "downloads",
+        "storage",
         "https://takeout.google.com/settings/takeout/*",
         "https://accounts.google.com/signin/v2/challenge/pwd?continue=https%3A%2F%2Ftakeout.google.com%2Ftakeout%2Fdownload*"
     ],
