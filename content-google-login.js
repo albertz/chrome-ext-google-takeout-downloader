@@ -12,7 +12,9 @@ chrome.storage.local.get(["googlePwd"], function(result) {
         var diff = nowTime - lastUsageTime;
         console.log("Time diff since last usage:", diff);
         if (diff < 5 * 60) {
-            console.log("Too short, stop.")
+            console.log("Error, too short, stop.");
+            // Avoid that it is entered again and again.
+            chrome.storage.local.set({googlePwd: {}}, function() {});
             return;
         }
     }
