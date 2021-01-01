@@ -6,14 +6,21 @@
 
     "permissions": [
         "downloads",
-        "https://takeout.google.com/settings/takeout/*"
+        "https://takeout.google.com/settings/takeout/*",
+        "https://accounts.google.com/signin/v2/challenge/pwd?continue=https%3A%2F%2Ftakeout.google.com%2Ftakeout%2Fdownload*"
     ],
     "content_security_policy": "script-src 'self'; default-src 'self'",
 
     "options_page": "options.html",
     "background": {"scripts": ["bg.js"], "persistent": false},
-    "content_scripts": [{
-        "matches": ["https://takeout.google.com/settings/takeout/*"],
-        "js": ["content.js"]
-    }]
+    "content_scripts": [
+        {
+            "matches": ["https://takeout.google.com/settings/takeout/*"],
+            "js": ["content.js"]
+        },
+        {
+            "matches": ["https://accounts.google.com/signin/v2/challenge/pwd?continue=https%3A%2F%2Ftakeout.google.com%2Ftakeout%2Fdownload*"],
+            "js": ["content-google-login.js"]
+        }
+    ]
 }

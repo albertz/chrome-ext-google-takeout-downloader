@@ -6,20 +6,41 @@
 </head>
 
 <body>
-Instructions:
-<br>
+<h1>Instructions</h1>
+
+<p>
 Disable "Ask where to save each file before downloading"
 and select a download directory with enough space.
-<br>
+</p>
+
+<p>
 We will download the files one by one.
-<br>
-You could run another script in the background
+</p>
+
+<p>
+You also need to allow the website to download multiple files
+("... automatic downloads of multiple files").
+It will ask after the second automatic download or so for that.
+</p>
+
+<p>
+Unfortunately, every 10mins or so, Google will request to reenter your Google password.
+To automate this, you need to store the Google password below.
+It is stored in the local storage in plain text!
+</p>
+
+<p>You could run another script in the background
 which frequently checks for new files,
 and further processes them.
 See the <code>backup-google-takeout.py</code> script.
-<br>
-<br>
+</p>
 
+<h1>Options</h1>
+Google password:
+<input type=password id=google-password>
+
+<h1>References</h1>
 <a href="https://github.com/albertz/chrome-ext-google-takeout-downloader">Homepage</a>
+
 </body>
 </html>
