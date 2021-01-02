@@ -5,7 +5,7 @@
 
 // https://takeout.google.com/settings/takeout/downloads?...
 takeoutUrlRe = /https:\/\/takeout.google.com\/.*/;
-takeoutFilenameRe = /.*-([0-9]+)\.(zip|mp4)/;
+takeoutFilenameRe = /.*-([0-9]+)\.(zip|mp4|flv)/;
 port = {};
 
 chrome.runtime.onConnect.addListener(function(__port) {
